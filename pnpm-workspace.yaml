@@ -1,0 +1,4 @@
+packages:
+  - "backend"
+  - "blog-reader-frontend"
+  - "blog-author-frontend"
