@@ -27,5 +27,9 @@ router.delete(
   blogpostController.deleteBlogpost
 );
 router.post("/:id/comments", blogpostController.addCommentToBlogpost);
+router.delete(
+  "/:id/comments/:commentId",
+  blogpostController.deleteCommentFromBlogpost
+);
 
 module.exports = router;

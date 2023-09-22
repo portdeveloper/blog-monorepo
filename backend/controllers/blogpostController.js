@@ -72,12 +72,16 @@ exports.deleteBlogpost = async (req, res) => {
 
 exports.addCommentToBlogpost = async (req, res) => {
   try {
+    const { content } = req.body;
+    if (!content)
+      return res.status(400).json({ message: "Content is required" });
+
     const blogpost = await Blogpost.findById(req.params.id);
     if (!blogpost)
       return res.status(404).json({ message: "Blogpost not found" });
 
     const comment = new Comment({
-      ...req.body,
+      content,
       blogpost: blogpost._id,
     });
 
@@ -87,6 +91,27 @@ exports.addCommentToBlogpost = async (req, res) => {
 
     res.status(201).json(savedComment);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(error); // Log error message for debugging
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+exports.deleteCommentFromBlogpost = async (req, res) => {
+  try {
+    const blogpost = await Blogpost.findById(req.params.id);
+    if (!blogpost)
+      return res.status(404).json({ message: "Blogpost not found" });
+
+    const comment = await Comment.findById(req.params.commentId);
+    if (!comment) return res.status(404).json({ message: "Comment not found" });
+
+    await comment.remove();
+    blogpost.comments.pull(comment._id);
+    await blogpost.save();
+
+    res.status(204).json({ message: "Comment deleted" });
+  } catch (error) {
+    console.error(error); // Log error message for debugging
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
