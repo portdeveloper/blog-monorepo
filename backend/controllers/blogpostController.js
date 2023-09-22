@@ -22,6 +22,17 @@ exports.getBlogposts = async (req, res) => {
   }
 };
 
+exports.getUnpublishedBlogposts = async (req, res) => {
+  try {
+    const blogposts = await Blogpost.find({})
+      .populate("user", "username email")
+      .populate("comments");
+    res.status(200).json(blogposts);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 exports.getBlogpostById = async (req, res) => {
   try {
     const blogpost = await Blogpost.findById(req.params.id)

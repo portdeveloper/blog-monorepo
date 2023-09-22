@@ -5,6 +5,11 @@ const passport = require("passport");
 const router = express.Router();
 
 router.get("/", blogpostController.getBlogposts);
+router.get(
+  "/unpublished",
+  passport.authenticate("jwt", { session: false }),
+  blogpostController.getUnpublishedBlogposts
+);
 router.get("/:id", blogpostController.getBlogpostById);
 router.post(
   "/",
