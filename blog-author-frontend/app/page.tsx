@@ -27,6 +27,7 @@ export default function Home() {
         const data: BlogPost[] = await res.json();
         setBlogposts(data);
       } catch (error: any) {
+        setIsLoggedIn(false);
         setError(error);
       } finally {
         setLoading(false);
