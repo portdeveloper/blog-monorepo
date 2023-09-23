@@ -8,6 +8,9 @@ export function Blogposts({ blogposts }: { blogposts: BlogPost[] }) {
           <li key={post._id} className="bg-white p-6 rounded shadow-md">
             <h2 className="text-2xl font-semibold mb-2">{post.title}</h2>
             <p className="text-gray-700">{post.content}</p>
+            <p className="text-gray-500 text-sm">
+              - {new Date(post.timestamp).toLocaleString()}
+            </p>
             <div>
               {post.comments.map((comment) => (
                 <div key={comment._id} className="bg-gray-100 p-4 my-2">
