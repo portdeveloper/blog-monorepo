@@ -1,4 +1,5 @@
 import { BlogPost } from "@/utils/types";
+import { useState } from "react";
 
 export function Blogposts({
   blogposts,
@@ -9,6 +10,36 @@ export function Blogposts({
   setBlogposts: Function;
   setError: Function;
 }) {
+  const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
+  const [updatedContent, setUpdatedContent] = useState<string>("");
+
+  const handleUpdate = async (post: BlogPost) => {
+    console.log(post._id);
+    try {
+      const res = await fetch(`http://localhost:5000/blogposts/${post._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ content: updatedContent }),
+      });
+
+      if (!res.ok) {
+        throw Error(`Error: ${res.statusText}`);
+      }
+
+      const updatedPost: BlogPost = await res.json();
+      setBlogposts(
+        blogposts.map((p) => (p._id === updatedPost._id ? updatedPost : p))
+      );
+      setEditingPost(null);
+      setUpdatedContent("");
+    } catch (error: any) {
+      setError(error.message);
+    }
+  };
+
   const handleDelete = async (id: string) => {
     try {
       const res = await fetch(`http://localhost:5000/blogposts/${id}`, {
@@ -36,13 +67,47 @@ export function Blogposts({
             key={post._id}
             className="bg-white p-6 rounded shadow-md flex flex-col"
           >
-            <h2 className="text-2xl font-semibold mb-2">{post.title}</h2>
-            <p className="text-gray-700">{post.content}</p>
-
+            <h2 className="text-2xl font-semi bold mb-2">{post.title}</h2>
+            {editingPost && editingPost._id === post._id ? (
+              <div>
+                <textarea
+                  value={updatedContent}
+                  onChange={(e) => setUpdatedContent(e.target.value)}
+                  className="textarea w-full h-72"
+                />
+                <button
+                  className="btn btn-success btn-xs"
+                  onClick={() => handleUpdate(post)}
+                >
+                  Update
+                </button>
+              </div>
+            ) : (
+              <p className="text-gray-700">{post.content}</p>
+            )}
             <p className="text-gray-500 text-sm">
               - {new Date(post.timestamp).toLocaleString()}
             </p>
             <div className="self-end flex gap-1">
+              {editingPost?._id === post._id ? (
+                <button
+                  className="btn btn-error btn-xs"
+                  onClick={() => setEditingPost(null)}
+                >
+                  Cancel
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    setEditingPost(post);
+                    setUpdatedContent(post.content);
+                  }}
+                  className="btn btn-warning btn-xs"
+                >
+                  Edit
+                </button>
+              )}
+
               <button
                 onClick={() => handleDelete(post._id)}
                 className="btn btn-error btn-xs"
