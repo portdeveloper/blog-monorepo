@@ -27,6 +27,7 @@ export default function Login() {
       const data = await res.json();
       localStorage.setItem("token", data.token);
       setSuccess("Logged in successfully!");
+      window.location.reload();
     } catch (error: any) {
       setError(error.message);
     }

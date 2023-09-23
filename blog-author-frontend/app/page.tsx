@@ -25,19 +25,21 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchBlogPosts = async () => {
+      const token = localStorage.getItem("token");
+      if (token) setIsLoggedIn(true);
       try {
         const res = await fetch("http://localhost:5000/blogposts/all", {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         });
         if (!res.ok) {
           throw Error(`Error: ${res.statusText}`);
         }
-        console.log(res);
         const data: BlogPost[] = await res.json();
         setBlogposts(data);
       } catch (error: any) {
@@ -75,7 +77,17 @@ export default function Home() {
     }
   };
 
-  console.log(blogposts);
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-gray-100 p-6">
+        <h1 className="text-3xl font-bold mb-4">Blog Author Frontend</h1>
+        <p className="text-gray-600 mb-6">
+          Please login to view and add blogposts
+        </p>
+        <Login />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
