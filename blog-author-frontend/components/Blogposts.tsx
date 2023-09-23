@@ -13,17 +13,20 @@ export function Blogposts({
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
   const [updatedContent, setUpdatedContent] = useState<string>("");
 
-  const handleUpdate = async (post: BlogPost) => {
-    console.log(post._id);
+  const handleUpdate = async (blogpost: BlogPost) => {
+    console.log(blogpost._id);
     try {
-      const res = await fetch(`http://localhost:5000/blogposts/${post._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({ content: updatedContent }),
-      });
+      const res = await fetch(
+        `http://localhost:5000/blogposts/${blogpost._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ content: updatedContent }),
+        }
+      );
 
       if (!res.ok) {
         throw Error(`Error: ${res.statusText}`);
@@ -62,13 +65,13 @@ export function Blogposts({
   return (
     <ul className="space-y-4">
       {blogposts &&
-        blogposts.map((post) => (
+        blogposts.map((blogpost) => (
           <li
-            key={post._id}
+            key={blogpost._id}
             className="bg-white p-6 rounded shadow-md flex flex-col"
           >
-            <h2 className="text-2xl font-semi bold mb-2">{post.title}</h2>
-            {editingPost && editingPost._id === post._id ? (
+            <h2 className="text-2xl font-semi bold mb-2">{blogpost.title}</h2>
+            {editingPost && editingPost._id === blogpost._id ? (
               <div>
                 <textarea
                   value={updatedContent}
@@ -77,19 +80,19 @@ export function Blogposts({
                 />
                 <button
                   className="btn btn-success btn-xs"
-                  onClick={() => handleUpdate(post)}
+                  onClick={() => handleUpdate(blogpost)}
                 >
                   Update
                 </button>
               </div>
             ) : (
-              <p className="text-gray-700">{post.content}</p>
+              <p className="text-gray-700">{blogpost.content}</p>
             )}
             <p className="text-gray-500 text-sm">
-              - {new Date(post.timestamp).toLocaleString()}
+              - {new Date(blogpost.timestamp).toLocaleString()}
             </p>
             <div className="self-end flex gap-1">
-              {editingPost?._id === post._id ? (
+              {editingPost?._id === blogpost._id ? (
                 <button
                   className="btn btn-error btn-xs"
                   onClick={() => setEditingPost(null)}
@@ -99,8 +102,8 @@ export function Blogposts({
               ) : (
                 <button
                   onClick={() => {
-                    setEditingPost(post);
-                    setUpdatedContent(post.content);
+                    setEditingPost(blogpost);
+                    setUpdatedContent(blogpost.content);
                   }}
                   className="btn btn-warning btn-xs"
                 >
@@ -109,14 +112,14 @@ export function Blogposts({
               )}
 
               <button
-                onClick={() => handleDelete(post._id)}
+                onClick={() => handleDelete(blogpost._id)}
                 className="btn btn-error btn-xs"
               >
                 Delete
               </button>
             </div>
             <div>
-              {post.comments.map((comment) => (
+              {blogpost.comments.map((comment) => (
                 <div key={comment._id} className="bg-gray-100 p-4 my-2">
                   <p className="text-gray-700">{comment.content}</p>
                   <p className="text-gray-500 text-sm"> - {comment.name}</p>
