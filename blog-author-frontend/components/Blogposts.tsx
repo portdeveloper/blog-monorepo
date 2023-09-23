@@ -14,7 +14,7 @@ export function Blogposts({
   const [updatedContent, setUpdatedContent] = useState<string>("");
 
   const handleUpdate = async (blogpost: BlogPost) => {
-    console.log(blogpost._id);
+    const published = blogpost.published;
     try {
       const res = await fetch(
         `http://localhost:5000/blogposts/${blogpost._id}`,
@@ -24,7 +24,7 @@ export function Blogposts({
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify({ content: updatedContent }),
+          body: JSON.stringify({ content: updatedContent, published }),
         }
       );
 
@@ -62,6 +62,36 @@ export function Blogposts({
     }
   };
 
+  const handleTogglePublished = async (e: any, blogpost: BlogPost) => {
+    console.log(e);
+
+    const published = e.target.checked;
+    try {
+      const res = await fetch(
+        `http://localhost:5000/blogposts/${blogpost._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ published }),
+        }
+      );
+
+      if (!res.ok) {
+        throw Error(`Error: ${res.statusText}`);
+      }
+
+      const updatedPost: BlogPost = await res.json();
+      setBlogposts(
+        blogposts.map((p) => (p._id === updatedPost._id ? updatedPost : p))
+      );
+    } catch (error: any) {
+      setError(error.message);
+    }
+  };
+
   return (
     <ul className="space-y-4">
       {blogposts &&
@@ -70,7 +100,18 @@ export function Blogposts({
             key={blogpost._id}
             className="bg-white p-6 rounded shadow-md flex flex-col"
           >
-            <h2 className="text-2xl font-semi bold mb-2">{blogpost.title}</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-semi bold mb-2">{blogpost.title}</h2>
+              <div className="flex gap-2">
+                <p className="text-gray-500 text-sm">published? </p>
+                <input
+                  type="checkbox"
+                  className="toggle toggle-success"
+                  checked={blogpost.published}
+                  onChange={(e) => handleTogglePublished(e, blogpost)}
+                />
+              </div>
+            </div>
             {editingPost && editingPost._id === blogpost._id ? (
               <div>
                 <textarea
