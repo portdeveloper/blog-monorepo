@@ -4,9 +4,7 @@ import Link from "next/link";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const res = await fetch(`http://localhost:5000/blogposts/${params.id}/`);
-  const blogpost: any = await res.json();
-
-  console.log(blogpost);
+  const blogpost: BlogPost = await res.json();
 
   return (
     <div className="prose prose-lg mx-auto p-4 space-y-6">
