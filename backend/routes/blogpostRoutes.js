@@ -6,9 +6,9 @@ const router = express.Router();
 
 router.get("/", blogpostController.getBlogposts);
 router.get(
-  "/unpublished",
+  "/all",
   passport.authenticate("jwt", { session: false }),
-  blogpostController.getUnpublishedBlogposts
+  blogpostController.getAllBlogposts
 );
 router.get("/:id", blogpostController.getBlogpostById);
 router.post(

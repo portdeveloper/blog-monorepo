@@ -22,7 +22,7 @@ exports.getBlogposts = async (req, res) => {
   }
 };
 
-exports.getUnpublishedBlogposts = async (req, res) => {
+exports.getAllBlogposts = async (req, res) => {
   try {
     const blogposts = await Blogpost.find({})
       .populate("user", "username email")
