@@ -67,7 +67,11 @@ export default function Home() {
       {loading && <p className="text-lg text-gray-500">Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
-      <Blogposts blogposts={blogposts} />
+      <Blogposts
+        blogposts={blogposts}
+        setBlogposts={setBlogposts}
+        setError={setError}
+      />
     </div>
   );
 }
