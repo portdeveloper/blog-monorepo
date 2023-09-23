@@ -91,7 +91,7 @@ exports.addCommentToBlogpost = async (req, res) => {
 
     res.status(201).json(savedComment);
   } catch (error) {
-    console.error(error); // Log error message for debugging
+    console.error(error); 
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -111,7 +111,7 @@ exports.deleteCommentFromBlogpost = async (req, res) => {
 
     res.status(204).json({ message: "Comment deleted" });
   } catch (error) {
-    console.error(error); // Log error message for debugging
+    console.error(error); 
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
