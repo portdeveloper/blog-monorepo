@@ -1,5 +1,6 @@
 import { BlogPost } from "@/utils/types";
 import { useState } from "react";
+import Comments from "./Comments";
 
 export function Blogposts({
   blogposts,
@@ -159,15 +160,7 @@ export function Blogposts({
                 Delete
               </button>
             </div>
-            <div>
-              {blogpost.comments.map((comment) => (
-                <div key={comment._id} className="bg-gray-100 p-4 my-2">
-                  <p className="text-gray-700">{comment.content}</p>
-                  <p className="text-gray-500 text-sm"> - {comment.name}</p>
-                  <p className="text-gray-500 text-sm">{comment.timestamp}</p>
-                </div>
-              ))}
-            </div>
+            <Comments blogpost={blogpost} />
           </li>
         ))}
     </ul>
