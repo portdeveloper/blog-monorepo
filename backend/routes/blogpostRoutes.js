@@ -26,9 +26,11 @@ router.delete(
   passport.authenticate("jwt", { session: false }),
   blogpostController.deleteBlogpost
 );
+
 router.post("/:id/comments", blogpostController.addCommentToBlogpost);
 router.delete(
   "/:id/comments/:commentId",
+  passport.authenticate("jwt", { session: false }),
   blogpostController.deleteCommentFromBlogpost
 );
 
