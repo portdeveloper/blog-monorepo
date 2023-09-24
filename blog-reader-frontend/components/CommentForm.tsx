@@ -1,7 +1,13 @@
 "use client";
 import { FormEvent, useState } from "react";
 
-export default function CommentForm({ blogpostId }: { blogpostId: string }) {
+function CommentForm({
+  blogpostId,
+  onNewComment,
+}: {
+  blogpostId: string;
+  onNewComment: () => void;
+}) {
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
 
@@ -21,6 +27,8 @@ export default function CommentForm({ blogpostId }: { blogpostId: string }) {
       if (!res.ok) {
         throw Error(`Error: ${res.statusText}`);
       }
+      onNewComment();
+
       setName("");
       setContent("");
     } catch (error) {
@@ -60,3 +68,5 @@ export default function CommentForm({ blogpostId }: { blogpostId: string }) {
     </form>
   );
 }
+
+export default CommentForm;
