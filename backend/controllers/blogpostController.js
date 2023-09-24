@@ -72,7 +72,7 @@ exports.deleteBlogpost = async (req, res) => {
 
 exports.addCommentToBlogpost = async (req, res) => {
   try {
-    const { content } = req.body;
+    const { content, name } = req.body;
     if (!content)
       return res.status(400).json({ message: "Content is required" });
 
@@ -81,6 +81,7 @@ exports.addCommentToBlogpost = async (req, res) => {
       return res.status(404).json({ message: "Blogpost not found" });
 
     const comment = new Comment({
+      name,
       content,
       blogpost: blogpost._id,
     });
@@ -91,7 +92,7 @@ exports.addCommentToBlogpost = async (req, res) => {
 
     res.status(201).json(savedComment);
   } catch (error) {
-    console.error(error); 
+    console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -102,16 +103,15 @@ exports.deleteCommentFromBlogpost = async (req, res) => {
     if (!blogpost)
       return res.status(404).json({ message: "Blogpost not found" });
 
-    const comment = await Comment.findById(req.params.commentId);
+    const comment = await Comment.findByIdAndDelete(req.params.commentId);
     if (!comment) return res.status(404).json({ message: "Comment not found" });
 
-    await comment.remove();
     blogpost.comments.pull(comment._id);
     await blogpost.save();
 
     res.status(204).json({ message: "Comment deleted" });
   } catch (error) {
-    console.error(error); 
+    console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
